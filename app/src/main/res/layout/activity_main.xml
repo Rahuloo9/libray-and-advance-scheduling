@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activity_back"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/currentSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@null"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/curHeader"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:background="@drawable/current_back" />
+
+        <TextView
+            android:id="@+id/curDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minHeight="60dp"
+            android:gravity="center"
+            android:background="@drawable/current_back_down" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nextSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@null"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/nextHeader"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:background="@drawable/current_back" />
+
+        <TextView
+            android:id="@+id/nextDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minHeight="60dp"
+            android:gravity="center"
+            android:background="@drawable/current_back_down" />
+    </LinearLayout>
+
+
+</LinearLayout>

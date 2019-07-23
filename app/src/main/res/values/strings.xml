@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Lecture Schedule</string>
+    <array name="DAYS">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </array>
+</resources>
