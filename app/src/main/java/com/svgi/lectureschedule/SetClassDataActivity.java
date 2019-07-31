@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -202,7 +203,7 @@ public class SetClassDataActivity extends AppCompatActivity {
 
     private void getBranchData() {
         db.collection("collage").document(collage).collection("year")
-                .document(year).collection("branches")
+                .document(year).collection("branch")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -224,8 +225,8 @@ public class SetClassDataActivity extends AppCompatActivity {
 
     private void getBatchData() {
         db.collection("collage").document(collage).collection("year")
-                .document(year).collection("branches")
-                .document(branch).collection("batches")
+                .document(year).collection("branch")
+                .document(branch).collection("batch")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -255,6 +256,8 @@ public class SetClassDataActivity extends AppCompatActivity {
             editor.putString("batch", batch);
             editor.apply();
             editor.commit();
+            startActivity(new Intent(this,MainActivity.class));
+            finish();
         } else {
             Toast.makeText(this, "Choose data first", Toast.LENGTH_SHORT).show();
         }

@@ -70,8 +70,8 @@ public class TimeTableProvider {
 
     private void fetchData() {
         db.collection("collage").document(collage).collection("year")
-                .document(year).collection("branches")
-                .document(branch).collection("batches")
+                .document(year).collection("branch")
+                .document(branch).collection("batch")
                 .document(batch).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
