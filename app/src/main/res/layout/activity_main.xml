@@ -1,63 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/scroll"
     android:layout_height="match_parent"
     android:background="@color/activity_back"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/currentSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@null"
-        android:layout_margin="10dp">
+        android:layout_margin="2dp">
 
-        <TextView
-            android:id="@+id/curHeader"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:text="Current Lecture"
-            android:background="@drawable/current_back" />
-
-        <TextView
-            android:id="@+id/curDetail"
+        <LinearLayout
+            android:id="@+id/currentSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:minHeight="60dp"
-            android:gravity="center"
-            android:background="@drawable/current_back_down" />
-    </LinearLayout>
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/nextSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@null"
-        android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/curHeader"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/current_back"
+                android:gravity="center"
+                android:text="Current Lecture" />
 
-        <TextView
-            android:id="@+id/nextHeader"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:text="Next Lecture"
-            android:background="@drawable/current_back" />
+            <TextView
+                android:id="@+id/curDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/current_back_down"
+                android:gravity="center"
+                android:minHeight="60dp"
+                android:padding="5dp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/nextDetail"
+        <LinearLayout
+            android:id="@+id/nextSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:minHeight="60dp"
-            android:gravity="center"
-            android:background="@drawable/current_back_down" />
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nextHeader"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/current_back"
+                android:gravity="center"
+                android:text="Next Lecture" />
+
+            <TextView
+                android:id="@+id/nextDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/current_back_down"
+                android:gravity="center"
+                android:minHeight="60dp"
+                android:padding="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/daySection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/current_back"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnPrev"
+                    android:layout_width="40dp"
+                    android:layout_gravity="center"
+                    android:layout_height="40dp"
+                    android:background="@null"
+                    android:paddingLeft="4dp"
+                    android:src="@drawable/ic_action_prev" />
+
+                <TextView
+                    android:id="@+id/dayTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Today" />
+
+                <ImageButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="40dp"
+                    android:layout_gravity="center"
+                    android:layout_height="40dp"
+                    android:background="@null"
+                    android:paddingRight="4dp"
+                    android:src="@drawable/ic_action_next"/>
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/dayList"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/current_back_down"
+                android:gravity="center"
+                android:minHeight="60dp"
+                android:padding="5dp" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

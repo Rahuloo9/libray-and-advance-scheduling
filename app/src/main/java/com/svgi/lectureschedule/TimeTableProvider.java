@@ -11,8 +11,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
@@ -39,8 +42,8 @@ public class TimeTableProvider {
 
     private void initVar() {
         calendar = Calendar.getInstance();
-        dayIndex = calendar.get(Calendar.DAY_OF_WEEK);
         DAYS = context.getResources().getStringArray(R.array.DAYS);
+        Log.d(TAG, "initVar: day Index========================================= "+dayIndex+" day "+calendar.toString()+" cal "+(new Date()).toString());
         sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
         db = FirebaseFirestore.getInstance();
         collage = sharedPreferences.getString("collage", "");
@@ -57,8 +60,8 @@ public class TimeTableProvider {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if (Objects.requireNonNull(documentSnapshot).exists()) {
-                    Log.d(TAG, "onEvent: == data found");
-                    Log.d(TAG, "Current data: " + documentSnapshot.getData());
+
+                    Log.d(TAG, "Current data: =============================== " + documentSnapshot.getData());
                     TIME = (ArrayList<String>) documentSnapshot.get("time");
                     fetchData();
                 } else {
@@ -99,8 +102,9 @@ public class TimeTableProvider {
 
     private void getCurrentLecture() {
         CURRENT_MIN = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
+        dayIndex = calendar.get(Calendar.DAY_OF_WEEK)-1;
+
         currentLectureIndex = -1;
-        Log.d(TAG, "getCurrentLecture: ============================= " + TIME);
         for (int i = 0; i < TIME.size() - 1; i++) {
             int a = (Integer.parseInt(TIME.get(i)));
             int b = (Integer.parseInt(TIME.get(i + 1)));
@@ -112,16 +116,17 @@ public class TimeTableProvider {
         if (onTimeTableDataListener != null) {
             String key = getId(dayIndex, currentLectureIndex);
             onTimeTableDataListener.currentLecture(currentLectureIndex != -1,
-                    SUBJECTS.get(key), FACULTY != null ? FACULTY.get(key) : null,
+                    SUBJECTS.get(key)+" key "+key, FACULTY != null ? FACULTY.get(key) : null,
                     ROOM_NUM != null ? ROOM_NUM.get(key) : null);
             key = getId(dayIndex, currentLectureIndex + 1);
 
-            Log.d(TAG, "getCurrentLecture: ====================================currentLectureIndex " + currentLectureIndex);
             onTimeTableDataListener.nextLecture(currentLectureIndex < TIME.size() - 2 && currentLectureIndex != -1,
                     SUBJECTS.get(key),
                     FACULTY != null ? FACULTY.get(key) : null,
                     ROOM_NUM != null ? ROOM_NUM.get(key) : null
             );
+
+            showDayList(0);
         }
     }
 
@@ -135,8 +140,17 @@ public class TimeTableProvider {
 
     public interface OnTimeTableDataListener {
         void currentLecture(boolean isLecture, String sub, String fac, String room);
-
         void nextLecture(boolean isNext, String sub, String fac, String room);
-
+        void dayListListener(ArrayList<String> strings,String day);
+    }
+    public void showDayList(int counter){
+        dayIndex+=counter;
+        if (dayIndex==0)dayIndex=6;
+        if (dayIndex==7)dayIndex=1;
+        ArrayList<String> strings=new ArrayList<>();
+        for (int i=0;i<TIME.size()-1;i++){
+            strings.add((i+1)+" : "+SUBJECTS.get(getId(dayIndex,i)));
+        }
+        if(onTimeTableDataListener!=null)onTimeTableDataListener.dayListListener(strings,DAYS[dayIndex]);
     }
 }
