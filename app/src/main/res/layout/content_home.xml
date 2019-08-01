@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/scroll"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/activity_back"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.HomeActivity"
+    tools:showIn="@layout/app_bar_home">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="2dp">
+        android:layout_margin="2dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/currentSection"
@@ -83,8 +84,8 @@
                 <ImageButton
                     android:id="@+id/btnPrev"
                     android:layout_width="40dp"
-                    android:layout_gravity="center"
                     android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:background="@null"
                     android:paddingLeft="4dp"
                     android:src="@drawable/ic_action_prev" />
@@ -100,11 +101,11 @@
                 <ImageButton
                     android:id="@+id/btnNext"
                     android:layout_width="40dp"
-                    android:layout_gravity="center"
                     android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:background="@null"
                     android:paddingRight="4dp"
-                    android:src="@drawable/ic_action_next"/>
+                    android:src="@drawable/ic_action_next" />
             </LinearLayout>
 
             <ListView
@@ -116,7 +117,5 @@
                 android:minHeight="60dp"
                 android:padding="5dp" />
         </LinearLayout>
-
-
     </LinearLayout>
 </ScrollView>

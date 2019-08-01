@@ -1,11 +1,9 @@
-package com.svgi.lectureschedule;
+package com.svgi.lectureschedule.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +14,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.svgi.lectureschedule.R;
+import com.svgi.lectureschedule.feature.CommonMethod;
+import com.svgi.lectureschedule.feature.Student;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,6 +33,7 @@ public class SetClassDataActivity extends AppCompatActivity {
     private ArrayList<String> arrayListCollage, arrayListYear, arrayListBranch, arrayListBatch;
     private ArrayAdapter<String> arrayAdapterCollage, arrayAdapterYear, arrayAdapterBranch, arrayAdapterBatch;
     private String collage = null, year = null, branch = null, batch = null;
+    private Student student;
 
 
     @Override
@@ -78,6 +80,8 @@ public class SetClassDataActivity extends AppCompatActivity {
         spinYear.setAdapter(arrayAdapterYear);
         spinBranch.setAdapter(arrayAdapterBranch);
         spinBatch.setAdapter(arrayAdapterBatch);
+
+        student = CommonMethod.loadStudentFromFile(this);
     }
 
     private void initClick() {
@@ -248,15 +252,18 @@ public class SetClassDataActivity extends AppCompatActivity {
 
     private void saveAndFetch() {
         if (collage != null && year != null && branch != null && batch != null) {
-            SharedPreferences sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("collage", collage);
-            editor.putString("year", year);
-            editor.putString("branch", branch);
-            editor.putString("batch", batch);
-            editor.apply();
-            editor.commit();
-            startActivity(new Intent(this,MainActivity.class));
+            student.setCollage(collage);
+            student.setYear(year);
+            student.setBranch(branch);
+            student.setBatch(batch);
+
+            CommonMethod.saveStudentToFile(student,this);
+            //update db data if login
+            if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                CommonMethod.updateStudentData(student, FirebaseAuth.getInstance().getUid());
+            }
+
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         } else {
             Toast.makeText(this, "Choose data first", Toast.LENGTH_SHORT).show();

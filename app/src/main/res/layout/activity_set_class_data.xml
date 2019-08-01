@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/activity_back"
-    tools:context=".SetClassDataActivity">
+    tools:context=".activity.SetClassDataActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
