@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.svgi.lectureschedule.MainActivity;
 import com.svgi.lectureschedule.activity.HomeActivity;
 import com.svgi.lectureschedule.activity.SetClassDataActivity;
 
@@ -30,7 +31,7 @@ public class CommonMethod {
                 if(documentSnapshot.exists()){
                     Student student = documentSnapshot.toObject(Student.class);
                     saveStudentToFile(student,context);
-                    context.startActivity(new Intent(context,HomeActivity.class));
+                   // context.startActivity(new Intent(context, MainActivity.class));
                 }else{
                     Toast.makeText(context,"Select Institue",Toast.LENGTH_SHORT).show();
                     context.startActivity(new Intent(context, SetClassDataActivity.class));

@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.svgi.lectureschedule.MainActivity;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
 
@@ -25,16 +29,22 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email, pass;
     private FirebaseAuth firebaseAuth;
     private String TAG = "login";
+    ProgressBar pb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
         initUI();
+        pb.setVisibility(View.GONE);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pb.setVisibility(View.VISIBLE);
                 String username = email.getText().toString().trim();
                 String password = pass.getText().toString().trim();
                 if (!username.isEmpty() && !password.isEmpty()) {
@@ -43,10 +53,11 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        pb.setVisibility(View.GONE);
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
                                         CommonMethod.fetchStudentData(firebaseAuth.getUid(),LoginActivity.this);
-                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         finish();
 
                                     } else {
@@ -93,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         pass = findViewById(R.id.editPassword);
         btnForget = findViewById(R.id.btnForgot);
         btnSkip = findViewById(R.id.btnSkip);
+        pb=findViewById(R.id.pb);
     }
 
 
