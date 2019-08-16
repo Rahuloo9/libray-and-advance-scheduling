@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -19,9 +17,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.svgi.lectureschedule.MainActivity;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,9 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Objects.requireNonNull(getSupportActionBar()).hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -56,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                                         pb.setVisibility(View.GONE);
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-                                        CommonMethod.fetchStudentData(firebaseAuth.getUid(),LoginActivity.this);
+                                        CommonMethod.fetchStudentData(firebaseAuth.getUid(), LoginActivity.this, null);
                                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                         finish();
 
@@ -65,10 +62,9 @@ public class LoginActivity extends AppCompatActivity {
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                                         Toast.makeText(LoginActivity.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
+                                        pb.setVisibility(View.GONE);
 
                                     }
-
-                                    // ...
                                 }
                             });
                 }
@@ -82,10 +78,10 @@ public class LoginActivity extends AppCompatActivity {
                     FirebaseAuth.getInstance().sendPasswordResetEmail(email.getText().toString().trim()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(LoginActivity.this,"Email sent to : " +email.getText().toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Email sent to : " + email.getText().toString(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else {
+                } else {
                     email.setError("enter valid email");
                 }
             }
@@ -93,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,SetClassDataActivity.class));
+                startActivity(new Intent(LoginActivity.this, SetClassDataActivity.class));
             }
         });
     }
@@ -104,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         pass = findViewById(R.id.editPassword);
         btnForget = findViewById(R.id.btnForgot);
         btnSkip = findViewById(R.id.btnSkip);
-        pb=findViewById(R.id.pb);
+        pb = findViewById(R.id.pb);
     }
 
 

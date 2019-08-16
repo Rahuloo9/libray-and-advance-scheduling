@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/activity_back"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="3dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/barCode"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_drawable"
+            android:hint="enter code"
+            android:padding="10dp"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/btnProceed"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignRight="@id/barCode"
+            android:layout_gravity="center"
+            android:layout_margin="3dp"
+            android:background="@color/colorAccent"
+            android:src="@drawable/ic_action_next"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <me.dm7.barcodescanner.zxing.ZXingScannerView
+        android:id="@+id/zXingScannerView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_below="@id/ll"
+        android:layout_centerInParent="true"
+        android:layout_margin="15dp" />
+
+
+</RelativeLayout>

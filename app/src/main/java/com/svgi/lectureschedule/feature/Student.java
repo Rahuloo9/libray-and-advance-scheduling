@@ -1,17 +1,20 @@
 package com.svgi.lectureschedule.feature;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Student implements Serializable {
-    private String name,email,branch,collage,batch,year;
+    private String name, email, branch, collage, batch, year;
+    private ArrayList<String> isssuedBooks;
 
-    public Student(String name, String email, String branch, String collage, String batch, String year) {
+    public Student(String name, String email) {
         this.name = name;
         this.email = email;
-        this.branch = branch;
-        this.collage = collage;
-        this.batch = batch;
-        this.year = year;
+        isssuedBooks = new ArrayList<>();
+    }
+
+    public ArrayList<String> getIsssuedBooks() {
+        return isssuedBooks;
     }
 
     @Override
@@ -19,9 +22,8 @@ public class Student implements Serializable {
         return super.toString();
     }
 
-    public Student(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public void setIsssuedBooks(ArrayList<String> isssuedBooks) {
+        this.isssuedBooks = isssuedBooks;
     }
 
     public Student() {

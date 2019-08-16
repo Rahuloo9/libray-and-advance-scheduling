@@ -1,8 +1,5 @@
 package com.svgi.lectureschedule.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +8,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -263,7 +263,7 @@ public class SetClassDataActivity extends AppCompatActivity {
                 CommonMethod.updateStudentData(student, FirebaseAuth.getInstance().getUid());
             }
 
-            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         } else {
             Toast.makeText(this, "Choose data first", Toast.LENGTH_SHORT).show();

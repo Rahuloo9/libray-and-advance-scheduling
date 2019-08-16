@@ -9,9 +9,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.svgi.lectureschedule.MainActivity;
-import com.svgi.lectureschedule.activity.HomeActivity;
 import com.svgi.lectureschedule.activity.SetClassDataActivity;
+import com.svgi.lectureschedule.fragment.TimeTableProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,16 +23,16 @@ import java.io.ObjectOutputStream;
 import javax.annotation.Nullable;
 
 public class CommonMethod {
-    public static void fetchStudentData(String uid, final Context context) {
+    public static void fetchStudentData(String uid, final Context context, final TimeTableProvider timeTableProvider) {
         FirebaseFirestore.getInstance().collection("students").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if(documentSnapshot.exists()){
                     Student student = documentSnapshot.toObject(Student.class);
                     saveStudentToFile(student,context);
-                   // context.startActivity(new Intent(context, MainActivity.class));
+                    if (timeTableProvider != null) timeTableProvider.initVar();
                 }else{
-                    Toast.makeText(context,"Select Institue",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Select Institute", Toast.LENGTH_SHORT).show();
                     context.startActivity(new Intent(context, SetClassDataActivity.class));
                 }
             }
