@@ -33,6 +33,7 @@ public class SearchBookFragments extends Fragment {
     private EditText editKeyWord;
     private ArrayList<String> arrayList;
     private ArrayAdapter<String> arrayAdapter;
+    private ArrayList<BookDetail> inList;
     private Student student;
     private ArrayList<BookDetail> bookDetailArrayList;
     private OnSearchBookListener onSearchBookListener;
@@ -49,13 +50,14 @@ public class SearchBookFragments extends Fragment {
             editKeyWord = view.findViewById(R.id.editKeyWord);
             arrayList = new ArrayList<>();
             bookDetailArrayList = new ArrayList<>();
+            inList = new ArrayList<>();
             arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
             resList.setAdapter(arrayAdapter);
             student = CommonMethod.loadStudentFromFile(getContext());
             resList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    BookDetail bookDetail = bookDetailArrayList.get(i);
+                    BookDetail bookDetail = inList.get(i);
                     AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
                     ab.setTitle(bookDetail.name);
                     ab.setMessage("By : " + bookDetail.author + "\nTotal : " + bookDetail.total + "\nAvailable : " + bookDetail.available);
@@ -109,10 +111,12 @@ public class SearchBookFragments extends Fragment {
 
     private void prepareSearchList(String key) {
         arrayList.clear();
+        inList.clear();
         Log.d("search", "onKey: key ========= " + key);
         for (BookDetail bookDetail : bookDetailArrayList) {
             if (bookDetail.name.toLowerCase().contains(key.toLowerCase()) || bookDetail.author.toLowerCase().contains(key.toLowerCase())) {
                 arrayList.add(bookDetail.name);
+                inList.add(bookDetail);
                 arrayAdapter.notifyDataSetChanged();
             }
         }
