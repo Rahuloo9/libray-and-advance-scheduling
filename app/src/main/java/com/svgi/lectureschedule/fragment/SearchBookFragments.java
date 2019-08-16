@@ -1,5 +1,7 @@
 package com.svgi.lectureschedule.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,13 +30,12 @@ import com.svgi.lectureschedule.feature.Student;
 import java.util.ArrayList;
 
 public class SearchBookFragments extends Fragment {
-    ListView resList;
-    EditText editKeyWord;
-    ArrayList<String> arrayList;
-    ArrayAdapter<String> arrayAdapter;
-    Student student;
-    ArrayList<BookDetail> bookDetailArrayList;
-    OnSearchBookListener onSearchBookListener;
+    private EditText editKeyWord;
+    private ArrayList<String> arrayList;
+    private ArrayAdapter<String> arrayAdapter;
+    private Student student;
+    private ArrayList<BookDetail> bookDetailArrayList;
+    private OnSearchBookListener onSearchBookListener;
 
     @Nullable
     @Override
@@ -45,7 +45,7 @@ public class SearchBookFragments extends Fragment {
             onSearchBookListener.onAuthNotFound();
         else {
 
-            resList = view.findViewById(R.id.resultList);
+            ListView resList = view.findViewById(R.id.resultList);
             editKeyWord = view.findViewById(R.id.editKeyWord);
             arrayList = new ArrayList<>();
             bookDetailArrayList = new ArrayList<>();
@@ -55,7 +55,17 @@ public class SearchBookFragments extends Fragment {
             resList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(getContext(), arrayList.get(i), Toast.LENGTH_SHORT).show();
+                    BookDetail bookDetail = bookDetailArrayList.get(i);
+                    AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+                    ab.setTitle(bookDetail.name);
+                    ab.setMessage("By : " + bookDetail.author + "\nTotal : " + bookDetail.total + "\nAvailable : " + bookDetail.available);
+                    ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    ab.create().show();
                 }
             });
 

@@ -23,6 +23,8 @@ import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
 import com.svgi.lectureschedule.feature.Student;
 
+import java.util.Objects;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class IssueBookFragment extends Fragment implements ZXingScannerView.ResultHandler {
@@ -67,13 +69,13 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     BookRegDetail bookRegDetail = documentSnapshot.toObject(BookRegDetail.class);
-                    if (bookRegDetail.issuedBy == null || bookRegDetail.issuedBy.isEmpty()) {
+                    if (Objects.requireNonNull(bookRegDetail).issuedBy == null || bookRegDetail.issuedBy.isEmpty()) {
                         getBookDetail(bookRegDetail.bid, id);
                     } else {
                         Toast.makeText(getContext(), "This book is already issued", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "no book targeting this code", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "no book targeting this code : " + id, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -135,11 +137,6 @@ class BookRegDetail {
     String bid, issuedBy;
 
     public BookRegDetail() {
-    }
-
-    public BookRegDetail(String bid, String issuedBy) {
-        this.bid = bid;
-        this.issuedBy = issuedBy;
     }
 }
 
