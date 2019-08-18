@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.activity.SetClassDataActivity;
 import com.svgi.lectureschedule.feature.CommonMethod;
-import com.svgi.lectureschedule.feature.Student;
+import com.svgi.lectureschedule.model.Student;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,34 +35,19 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-interface OnTimeTableDataListener {
 
-    void currentLecture(boolean isLecture, String sub, String fac, String room);
-
-    void nextLecture(boolean isNext, String sub, String fac, String room);
-
-    void dayListListener(ArrayList<String> strings, String day);
-
-}
-
-public class TimeTableProvider extends Fragment implements OnTimeTableDataListener {
+public class TimeTableProvider extends Fragment {
     private Map<String, String> SUBJECTS, FACULTY = null, ROOM_NUM = null;
     private String collage, year, branch, batch;
     private ArrayList<Long> TIME;
     private String[] DAYS;
-    private int CURRENT_MIN;
     private Calendar calendar;
-    private int dayIndex, currentLectureIndex;
+    private int dayIndex;
     private FirebaseFirestore db;
     private OnTimeTableProviderListner onTimeTableProviderListner;
     private String TAG = "TimeTableProviderListner";
-    private FirebaseAuth auth;
     private Context context;
-    private OnTimeTableDataListener onTimeTableDataListener = null;
-    private Student student;
     private TextView currentLec, nextLec, dayTitle;
-    private ImageButton btnPrev, btnNext;
-    private ListView dayList;
     private LinearLayout curLinear, nextLinear;
     private ArrayList<String> lecList;
     private ArrayAdapter<String> arrayAdapter;
@@ -81,8 +66,9 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
 
 
     public void initVar() {
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         File file = new File(getContext().getFilesDir(), "student.txt");
+        Student student;
         if (file.exists()) {
             student = CommonMethod.loadStudentFromFile(getContext());
         } else if (auth.getCurrentUser() != null) {
@@ -149,10 +135,10 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
 
 
     private void getCurrentLecture() {
-        CURRENT_MIN = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
+        int CURRENT_MIN = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
         dayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 1;
 
-        currentLectureIndex = -1;
+        int currentLectureIndex = -1;
         for (int i = 0; i < TIME.size() - 1; i++) {
             int a = TIME.get(i).intValue();
             int b = TIME.get(i + 1).intValue();
@@ -161,33 +147,28 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
                 break;
             }
         }
-        if (onTimeTableDataListener != null) {
-            String key = getId(dayIndex, currentLectureIndex);
-            onTimeTableDataListener.currentLecture(currentLectureIndex != -1,
-                    SUBJECTS.get(key), FACULTY != null ? FACULTY.get(key) : null,
-                    ROOM_NUM != null ? ROOM_NUM.get(key) : null);
-            key = getId(dayIndex, currentLectureIndex + 1);
+        String key = getId(dayIndex, currentLectureIndex);
+        currentLecture(currentLectureIndex != -1,
+                SUBJECTS.get(key), FACULTY != null ? FACULTY.get(key) : null,
+                ROOM_NUM != null ? ROOM_NUM.get(key) : null);
+        key = getId(dayIndex, currentLectureIndex + 1);
 
-            onTimeTableDataListener.nextLecture(currentLectureIndex < TIME.size() - 2 && currentLectureIndex != -1,
-                    SUBJECTS.get(key),
-                    FACULTY != null ? FACULTY.get(key) : null,
-                    ROOM_NUM != null ? ROOM_NUM.get(key) : null
-            );
+        nextLecture(currentLectureIndex < TIME.size() - 2 && currentLectureIndex != -1,
+                SUBJECTS.get(key),
+                FACULTY != null ? FACULTY.get(key) : null,
+                ROOM_NUM != null ? ROOM_NUM.get(key) : null
+        );
 
-            showDayList(0);
-        }
+        showDayList(0);
+
     }
 
     private String getId(int day, int lec) {
         return "day" + day + "lec" + lec;
     }
 
-    private void setOnTimeTableDataListener(OnTimeTableDataListener onTimeTableDataListener) {
-        this.onTimeTableDataListener = onTimeTableDataListener;
-    }
 
-    @Override
-    public void currentLecture(boolean isLecture, String sub, String fac, String room) {
+    private void currentLecture(boolean isLecture, String sub, String fac, String room) {
         if (isLecture) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(sub);
@@ -200,8 +181,7 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
         }
     }
 
-    @Override
-    public void nextLecture(boolean isNext, String sub, String fac, String room) {
+    private void nextLecture(boolean isNext, String sub, String fac, String room) {
         if (isNext) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(sub);
@@ -214,8 +194,7 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
         }
     }
 
-    @Override
-    public void dayListListener(ArrayList<String> strings, String day) {
+    private void dayListListener(ArrayList<String> strings, String day) {
         lecList.clear();
         lecList.addAll(strings);
         dayTitle.setText(day);
@@ -231,8 +210,8 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
         for (int i = 0; i < TIME.size() - 1; i++) {
             strings.add((i + 1) + " : " + SUBJECTS.get(getId(dayIndex, i)));
         }
-        if (onTimeTableDataListener != null)
-            onTimeTableDataListener.dayListListener(strings, DAYS[dayIndex]);
+
+        dayListListener(strings, DAYS[dayIndex]);
     }
 
     private void initUI(View activity) {
@@ -241,13 +220,12 @@ public class TimeTableProvider extends Fragment implements OnTimeTableDataListen
         curLinear = activity.findViewById(R.id.currentSection);
         nextLinear = activity.findViewById(R.id.nextSection);
         dayTitle = activity.findViewById(R.id.dayTitle);
-        btnNext = activity.findViewById(R.id.btnNext);
-        btnPrev = activity.findViewById(R.id.btnPrev);
-        dayList = activity.findViewById(R.id.dayList);
+        ImageButton btnNext = activity.findViewById(R.id.btnNext);
+        ImageButton btnPrev = activity.findViewById(R.id.btnPrev);
+        ListView dayList = activity.findViewById(R.id.dayList);
         lecList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, lecList);
         dayList.setAdapter(arrayAdapter);
-        setOnTimeTableDataListener(this);
 
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override

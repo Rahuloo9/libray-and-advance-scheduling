@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
-import com.svgi.lectureschedule.feature.Student;
+import com.svgi.lectureschedule.model.BookDetail;
+import com.svgi.lectureschedule.model.Student;
 
 import java.util.ArrayList;
 
@@ -51,16 +51,16 @@ public class SearchBookFragments extends Fragment {
             arrayList = new ArrayList<>();
             bookDetailArrayList = new ArrayList<>();
             inList = new ArrayList<>();
-            arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, arrayList);
+            arrayAdapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_1, arrayList);
             resList.setAdapter(arrayAdapter);
-            student = CommonMethod.loadStudentFromFile(getContext());
+            student = CommonMethod.loadStudentFromFile(view.getContext());
             resList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     BookDetail bookDetail = inList.get(i);
-                    AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-                    ab.setTitle(bookDetail.name);
-                    ab.setMessage("By : " + bookDetail.author + "\nTotal : " + bookDetail.total + "\nAvailable : " + bookDetail.available);
+                    AlertDialog.Builder ab = new AlertDialog.Builder(view.getContext());
+                    ab.setTitle(bookDetail.getName());
+                    ab.setMessage("By : " + bookDetail.getAuthor() + "\nTotal : " + bookDetail.getTotal() + "\nAvailable : " + bookDetail.getAvailable());
                     ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -101,7 +101,7 @@ public class SearchBookFragments extends Fragment {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
                     BookDetail bookDetail = ds.toObject(BookDetail.class);
-                    Log.d("search", "onSuccess: book " + bookDetail.name);
+//                    Log.d("search", "onSuccess: book " + bookDetail.name);
                     bookDetailArrayList.add(bookDetail);
                 }
                 prepareSearchList("");
@@ -112,10 +112,9 @@ public class SearchBookFragments extends Fragment {
     private void prepareSearchList(String key) {
         arrayList.clear();
         inList.clear();
-        Log.d("search", "onKey: key ========= " + key);
         for (BookDetail bookDetail : bookDetailArrayList) {
-            if (bookDetail.name.toLowerCase().contains(key.toLowerCase()) || bookDetail.author.toLowerCase().contains(key.toLowerCase())) {
-                arrayList.add(bookDetail.name);
+            if (bookDetail.getName().toLowerCase().contains(key.toLowerCase()) || bookDetail.getAuthor().toLowerCase().contains(key.toLowerCase())) {
+                arrayList.add(bookDetail.getName());
                 inList.add(bookDetail);
                 arrayAdapter.notifyDataSetChanged();
             }

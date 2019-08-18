@@ -21,17 +21,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.Result;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
-import com.svgi.lectureschedule.feature.Student;
+import com.svgi.lectureschedule.model.BookDetail;
+import com.svgi.lectureschedule.model.BookRegDetail;
+import com.svgi.lectureschedule.model.Student;
 
+import java.util.Date;
 import java.util.Objects;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class IssueBookFragment extends Fragment implements ZXingScannerView.ResultHandler {
-    private ZXingScannerView zXingScannerView;
+    private ZXingScannerView zXingScannerView = null;
     private EditText barCode;
     private Student student;
-    private OnIssuedBookFragmentListener onIssuedBookFragmentListener;
 
     @Nullable
     @Override
@@ -40,18 +42,15 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
         zXingScannerView = view.findViewById(R.id.zXingScannerView);
         ImageButton btnProceed = view.findViewById(R.id.btnProceed);
         barCode = view.findViewById(R.id.barCode);
-        student = CommonMethod.loadStudentFromFile(getContext());
+        student = CommonMethod.loadStudentFromFile(view.getContext());
         zXingScannerView.setResultHandler(this);
-        zXingScannerView.startCamera();
         btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getBookRegDetail(barCode.getText().toString());
             }
         });
-        if (onIssuedBookFragmentListener != null && FirebaseAuth.getInstance().getCurrentUser() == null) {
-            onIssuedBookFragmentListener.onAuthNotFound();
-        }
+
 
         return view;
     }
@@ -69,8 +68,8 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     BookRegDetail bookRegDetail = documentSnapshot.toObject(BookRegDetail.class);
-                    if (Objects.requireNonNull(bookRegDetail).issuedBy == null || bookRegDetail.issuedBy.isEmpty()) {
-                        getBookDetail(bookRegDetail.bid, id);
+                    if (Objects.requireNonNull(bookRegDetail).getIssuedBy() == null || bookRegDetail.getIssuedBy().isEmpty()) {
+                        getBookDetail(bookRegDetail.getBid(), id);
                     } else {
                         Toast.makeText(getContext(), "This book is already issued", Toast.LENGTH_SHORT).show();
                     }
@@ -81,9 +80,6 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
         });
     }
 
-    public void setOnIssuedBookFragmentListener(OnIssuedBookFragmentListener onIssuedBookFragmentListener) {
-        this.onIssuedBookFragmentListener = onIssuedBookFragmentListener;
-    }
 
     private void getBookDetail(String bid, final String id) {
         FirebaseFirestore.getInstance().collection("collage").document(student.getCollage()).collection("other").
@@ -94,20 +90,19 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
                     BookDetail bookDetail = documentSnapshot.toObject(BookDetail.class);
                     AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
                     ab.setTitle("Confirm");
-                    ab.setMessage("Do you want to issue,book " + bookDetail.name + " by " + bookDetail.author);
+                    ab.setMessage("Do you want to issue,book " + bookDetail.getName() + " by " + bookDetail.getAuthor());
                     ab.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             FirebaseFirestore.getInstance().collection("collage").document(student.getCollage()).collection("other").
                                     document("library").collection("all-book").document(id).update("issuedBy",
-                                    FirebaseAuth.getInstance().getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(getContext(), "Book Issued Successfully", Toast.LENGTH_SHORT).show();
-                                    if (onIssuedBookFragmentListener != null)
-                                        onIssuedBookFragmentListener.onSuccess();
-                                }
-                            });
+                                    FirebaseAuth.getInstance().getUid(), "date", new Date())
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(getContext(), "Book Issued Successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
                     });
                     ab.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -125,25 +120,17 @@ public class IssueBookFragment extends Fragment implements ZXingScannerView.Resu
     }
 
 
-    public interface OnIssuedBookFragmentListener {
-        void onSuccess();
-
-        void onAuthNotFound();
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (zXingScannerView != null) zXingScannerView.startCamera();
     }
 
-}
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (zXingScannerView != null) zXingScannerView.stopCamera();
 
-class BookRegDetail {
-    String bid, issuedBy;
-
-    public BookRegDetail() {
     }
-}
 
-class BookDetail {
-    String name, author;
-    int total, available;
-
-    public BookDetail() {
-    }
 }

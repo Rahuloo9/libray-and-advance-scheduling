@@ -21,7 +21,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
-import com.svgi.lectureschedule.feature.Student;
+import com.svgi.lectureschedule.model.Student;
 
 import java.util.ArrayList;
 import java.util.Objects;

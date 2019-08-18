@@ -17,6 +17,10 @@
             android:icon="@drawable/ic_search"
             android:title="Search Book" />
         <item
+            android:id="@+id/nav_book_transaction"
+            android:icon="@drawable/ic_search"
+            android:title="Book Transaction" />
+        <item
             android:id="@+id/event"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="Events" />

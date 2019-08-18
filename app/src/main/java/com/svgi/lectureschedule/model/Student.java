@@ -1,4 +1,4 @@
-package com.svgi.lectureschedule.feature;
+package com.svgi.lectureschedule.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

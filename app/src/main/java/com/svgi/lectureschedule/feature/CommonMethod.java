@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.svgi.lectureschedule.activity.SetClassDataActivity;
 import com.svgi.lectureschedule.fragment.TimeTableProvider;
+import com.svgi.lectureschedule.model.Student;
 
 import java.io.File;
 import java.io.FileInputStream;

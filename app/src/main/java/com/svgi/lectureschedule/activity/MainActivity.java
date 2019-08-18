@@ -18,16 +18,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.svgi.lectureschedule.R;
 import com.svgi.lectureschedule.feature.CommonMethod;
-import com.svgi.lectureschedule.feature.Student;
+import com.svgi.lectureschedule.fragment.BookTransactionListFragment;
 import com.svgi.lectureschedule.fragment.IssueBookFragment;
 import com.svgi.lectureschedule.fragment.SearchBookFragments;
 import com.svgi.lectureschedule.fragment.TimeTableProvider;
+import com.svgi.lectureschedule.model.Student;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         TimeTableProvider.OnTimeTableProviderListner {
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth auth;
     private NavigationView navigationView;
     private Student student;
-    private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,15 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         auth = FirebaseAuth.getInstance();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -62,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         showTimeTableFragment();
-
+//        showBookTransactionFragment();
 
     }
 
@@ -135,15 +126,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new String[]{Manifest.permission.CAMERA},
                         101);
             } else {
-                shoeIssueBookFragment();
+                showIssueBookFragment();
             }
         } else if (id == R.id.nav_search_book) {
             showBookSearchFragment();
         } else if (id == R.id.logout) {
             auth.signOut();
-            onResume();
-        } else if (id == R.id.nav_share) {
 
+            onResume();
+        } else if (id == R.id.nav_book_transaction) {
+            showBookTransactionFragment();
         } else if (id == R.id.login) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
@@ -169,38 +161,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         timeTableProvider.setOnTimeTableProviderListner(this);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, timeTableProvider)
                 .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
-
     }
 
     private void showBookSearchFragment() {
-        SearchBookFragments searchBookFragments = new SearchBookFragments();
-        searchBookFragments.setOnSearchBookListener(new SearchBookFragments.OnSearchBookListener() {
-            @Override
-            public void onAuthNotFound() {
-                showTimeTableFragment();
-                Toast.makeText(getApplicationContext(), "Login to search for book", Toast.LENGTH_SHORT).show();
-            }
-        });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, searchBookFragments)
-                .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
 
+        if (isAuthenticated()) {
+            SearchBookFragments searchBookFragments = new SearchBookFragments();
+            searchBookFragments.setOnSearchBookListener(new SearchBookFragments.OnSearchBookListener() {
+                @Override
+                public void onAuthNotFound() {
+                    showTimeTableFragment();
+                    Toast.makeText(getApplicationContext(), "Login to search for book", Toast.LENGTH_SHORT).show();
+                }
+            });
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, searchBookFragments)
+                    .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
+
+        } else {
+            Toast.makeText(this, "This feature is available for only logged user", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void shoeIssueBookFragment() {
-        IssueBookFragment issueBookFragment = new IssueBookFragment();
-        issueBookFragment.setOnIssuedBookFragmentListener(new IssueBookFragment.OnIssuedBookFragmentListener() {
-            @Override
-            public void onSuccess() {
-                CommonMethod.fetchStudentData(auth.getUid(), getApplicationContext(), null);
-            }
+    private void showIssueBookFragment() {
 
-            @Override
-            public void onAuthNotFound() {
-                showTimeTableFragment();
-            }
-        });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, issueBookFragment)
-                .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
-
+        if (isAuthenticated()) {
+            IssueBookFragment issueBookFragment = new IssueBookFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, issueBookFragment)
+                    .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
+        } else {
+            Toast.makeText(this, "This feature is available for only logged user", Toast.LENGTH_SHORT).show();
+        }
     }
+
+    private void showBookTransactionFragment() {
+
+        if (isAuthenticated()) {
+            BookTransactionListFragment issuedBookListFragment = new BookTransactionListFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentCon, issuedBookListFragment)
+                    .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).commit();
+        } else {
+            Toast.makeText(this, "This feature is available for only logged user", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isAuthenticated() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
 }
