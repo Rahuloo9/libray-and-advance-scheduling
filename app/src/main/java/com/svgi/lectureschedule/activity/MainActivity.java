@@ -1,6 +1,11 @@
 package com.svgi.lectureschedule.activity;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
+
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,6 +19,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+
         if (auth.getCurrentUser() == null) {
             navigationView.getMenu().findItem(R.id.logout).setVisible(false);
             navigationView.getMenu().findItem(R.id.login).setVisible(true);
@@ -68,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.getMenu().findItem(R.id.login).setVisible(false);
             student = CommonMethod.loadStudentFromFile(getApplicationContext());
             setStudentProfile();
+
         }
+
     }
 
     private void setStudentProfile() {
@@ -139,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.login) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
+        else if (id == R.id.event) {
+
+                    }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -209,3 +222,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 }
+
+

@@ -5,6 +5,7 @@ public class BookDetail {
     private String author;
     private int total;
     private int available;
+    private String keptAt;
 
     public BookDetail() {
     }
@@ -23,6 +24,13 @@ public class BookDetail {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+    public String getKeptAt() {
+        return keptAt;
+    }
+
+    public void setKeptAt(String keptAt) {
+        this.keptAt = keptAt;
     }
 
     public int getTotal() {

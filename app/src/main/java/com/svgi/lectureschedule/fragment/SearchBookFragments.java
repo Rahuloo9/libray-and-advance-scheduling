@@ -60,7 +60,7 @@ public class SearchBookFragments extends Fragment {
                     BookDetail bookDetail = inList.get(i);
                     AlertDialog.Builder ab = new AlertDialog.Builder(view.getContext());
                     ab.setTitle(bookDetail.getName());
-                    ab.setMessage("By : " + bookDetail.getAuthor() + "\nTotal : " + bookDetail.getTotal() + "\nAvailable : " + bookDetail.getAvailable());
+                    ab.setMessage("By : " + bookDetail.getAuthor() + "\nTotal : " + bookDetail.getTotal() + "\nAvailable : " + bookDetail.getAvailable()+ "\nLocation : "+bookDetail.getKeptAt());
                     ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
